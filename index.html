@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prototipo TEAPP</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--tx:#1f2a37;--mu:#5b6b7c;--pr:#2f6fba;--ac:#f2b705;--ok:#2e9e6b;--bd:#d5dde6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161d;--card:#1b2530;--tx:#e8eef4;--mu:#9fb0c2;--bd:#2c3a49}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,Arial,sans-serif;display:flex;flex-direction:column;align-items:center}
+nav{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:10px;max-width:420px}
+nav button{font-size:12px;padding:6px 9px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:14px;cursor:pointer}
+nav button.on{background:var(--pr);color:#fff;border-color:var(--pr)}
+.scr{display:none;width:100%;max-width:380px;min-height:520px;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:18px;margin:4px 8px 20px;box-sizing:border-box}
+.scr.on{display:block}
+.tag{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}
+h2{margin:4px 0 14px;font-size:20px}
+input{width:100%;box-sizing:border-box;padding:11px;margin:5px 0 10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);font-size:15px}
+.btn{display:block;width:100%;padding:14px;margin-top:10px;border:0;border-radius:12px;background:var(--pr);color:#fff;font-size:16px;cursor:pointer}
+.btn.s{background:transparent;color:var(--pr);border:1px solid var(--pr)}
+.box{background:var(--bg);border:1px solid var(--bd);border-radius:12px;padding:12px;margin:8px 0}
+.row{display:flex;justify-content:space-between;align-items:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pic{font-size:15px;padding:18px 6px;border:2px solid var(--bd);border-radius:16px;background:var(--bg);color:var(--tx);cursor:pointer}
+.pic span{display:block;font-size:44px}
+.pic.sel{border-color:var(--ac)}
+.step{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--bd);border-radius:12px;margin:8px 0;cursor:pointer;font-size:16px}
+.step.done{background:#2e9e6b22;text-decoration:line-through}
+.sos{background:#c0392b}
+#msg,#pdf,#ok,#star{margin-top:10px;font-weight:600}
+</style></head><body>
+<nav id="nav"></nav>
+
+<section class="scr on" id="s1"><div class="tag">Portal web · Pantalla 1</div><h2>Iniciar sesión</h2>
+<label>Correo del adulto autorizado</label><input placeholder="adulto@ejemplo.com">
+<label>Contraseña</label><input type="password" placeholder="••••••••">
+<button class="btn" onclick="go(2)">Ingresar</button></section>
+
+<section class="scr" id="s2"><div class="tag">Portal web · Pantalla 2</div><h2>Panel del niño</h2>
+<div class="box row"><span>Perfil</span><b>6–8 años · usa pictogramas</b></div>
+<div class="box row"><span>Estrellas esta semana</span><b>★ 12</b></div>
+<div class="box row"><span>Rutinas completadas</span><b>5 de 7</b></div>
+<div class="box row"><span>Actividades realizadas</span><b>9</b></div>
+<button class="btn" onclick="go(3)">Crear rutina</button>
+<button class="btn s" onclick="document.getElementById('pdf').textContent='Informe PDF generado (simulación)'">Generar informe PDF</button>
+<div id="pdf"></div></section>
+
+<section class="scr" id="s3"><div class="tag">Portal web · Pantalla 3</div><h2>Crear rutina visual</h2>
+<label>Nombre de la rutina</label><input value="Rutina de la mañana">
+<div class="box">1. Despertar y lavarme la cara</div>
+<div class="box">2. Vestirme</div>
+<div class="box">3. Desayunar</div>
+<button class="btn s" onclick="this.insertAdjacentHTML('beforebegin','<div class=box>4. Nuevo paso</div>')">+ Agregar paso</button>
+<button class="btn" onclick="go(4)">Guardar y asignar a la app</button></section>
+
+<section class="scr" id="s4"><div class="tag">App móvil · Pantalla 4</div><h2>Rutina de la mañana</h2>
+<div class="step" onclick="st(this)">☐ Despertar y lavarme la cara</div>
+<div class="step" onclick="st(this)">☐ Vestirme</div>
+<div class="step" onclick="st(this)">☐ Desayunar</div>
+<div id="star"></div>
+<button class="btn" onclick="go(5)">Pedir algo</button></section>
+
+<section class="scr" id="s5"><div class="tag">App móvil · Pantalla 5</div><h2>¿Qué necesitas?</h2>
+<div class="grid" id="g"></div><div id="msg"></div>
+<button class="btn sos" onclick="document.getElementById('msg').textContent='Aviso enviado al cuidador (SOS)'">SOS · Pedir ayuda</button>
+<button class="btn s" onclick="go(6)">Ajustes sensoriales</button></section>
+
+<section class="scr" id="s6"><div class="tag">App móvil · Pantalla 6</div><h2>Ajustes sensoriales</h2>
+<div class="box row"><span>Sonido</span><input type="checkbox" checked style="width:auto"></div>
+<div class="box row"><span>Reducir animaciones</span><input type="checkbox" style="width:auto"></div>
+<div class="box row"><span>Alto contraste</span><input type="checkbox" onchange="document.documentElement.dataset.theme=this.checked?'dark':'light'" style="width:auto"></div>
+<button class="btn" onclick="go(5)">Volver</button><button class="btn s" onclick="go(1)">Reiniciar recorrido</button></section>
+
+<script>
+const T=['1 Inicio sesión','2 Panel','3 Crear rutina','4 Rutina app','5 Pictogramas','6 Ajustes'];
+const nav=document.getElementById('nav');
+T.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>go(i+1);nav.appendChild(b)});
+function go(n){document.querySelectorAll('.scr').forEach((s,i)=>s.classList.toggle('on',i+1===n));[...nav.children].forEach((b,i)=>b.classList.toggle('on',i+1===n));scrollTo(0,0)}
+function st(e){e.classList.toggle('done');e.textContent=(e.classList.contains('done')?'☑ ':'☐ ')+e.textContent.slice(2);const all=[...document.querySelectorAll('#s4 .step')].every(x=>x.classList.contains('done'));document.getElementById('star').textContent=all?'¡Rutina completada! ★ +1 estrella':''}
+[['💧','Agua'],['🍽️','Comer'],['🚻','Baño'],['😴','Descansar'],['🎮','Jugar'],['🤝','Ayuda']].forEach(([e,n])=>{const b=document.createElement('button');b.className='pic';b.innerHTML='<span>'+e+'</span>'+n;b.onclick=()=>{document.querySelectorAll('.pic').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');document.getElementById('msg').textContent='🔊 “Quiero: '+n+'”'};document.getElementById('g').appendChild(b)});
+go(1);
+</script></body></html>
